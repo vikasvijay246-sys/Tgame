@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Speed Typer — Racing Typing Game</title>
+<meta name="description" content="Competitive typing speed racing game with AI opponents">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<!-- ░░░░░░ HEADER ░░░░░░ -->
+<header>
+  <div class="logo">
+    <div class="logo-icon">🏎</div>
+    Speed<span>Typer</span>
+  </div>
+
+  <div class="header-right">
+    <!-- Player Badge -->
+    <div class="player-tag">
+      <span class="player-dot" id="player-dot"></span>
+      <span id="player-veh">🏎️</span>
+      <span id="player-name">RACER</span>
+    </div>
+
+    <!-- Beginner Mode -->
+    <button class="btn btn-beginner" id="btn-beginner">🚀 Beginner Mode</button>
+
+    <!-- Profile -->
+    <button class="btn" id="btn-profile">👤 Profile</button>
+
+    <!-- Theme Toggle -->
+    <button class="theme-toggle" id="btn-theme" title="Toggle Dark/Light Mode">
+      <div class="toggle-track">
+        <div class="toggle-thumb"></div>
+      </div>
+      <span id="theme-label">Dark</span>
+    </button>
+  </div>
+</header>
+
+
+<!-- ░░░░░░ GAME WRAP ░░░░░░ -->
+<div class="game-wrap">
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-card">
+      <div class="stat-label">WPM</div>
+      <div class="stat-value" id="wpm-val">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">ACCURACY</div>
+      <div class="stat-value" id="acc-val">100%</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">TIME LEFT</div>
+      <div class="stat-value" id="time-val">60s</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">LINES DONE</div>
+      <div class="stat-value" id="line-val">0</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">BEST WPM</div>
+      <div class="stat-value good" id="best-val">—</div>
+    </div>
+  </div>
+
+  <!-- BEGINNER BANNER -->
+  <div class="beginner-banner" id="beg-banner">
+    <div class="beg-text">🚀 Beginner Mode — Easy words, helpful hints, no pressure!</div>
+    <div class="beg-hint" id="beg-hint">Next: ?</div>
+  </div>
+
+  <!-- BEGINNER PROGRESS -->
+  <div class="beg-progress-wrap" id="beg-progress">
+    <div class="beg-progress-label">
+      <span>Lines Completed</span>
+      <span><span id="beg-prog-cur">0</span> / <span id="beg-prog-tot">15</span></span>
+    </div>
+    <div class="beg-progress-track">
+      <div class="beg-progress-fill" id="beg-prog-fill"></div>
+    </div>
+  </div>
+
+  <!-- TRACK -->
+  <div class="track-wrap">
+    <canvas id="track-canvas"></canvas>
+
+    <!-- Ticker strip (position order) -->
+    <div class="ticker-strip" id="ticker-strip"></div>
+
+    <!-- Countdown overlay on track -->
+    <div class="countdown-screen" id="countdown-screen">
+      <div class="cd-num" id="cd-num">3</div>
+      <div class="cd-label">GET READY</div>
+    </div>
+  </div>
+
+  <!-- TYPING SECTION -->
+  <div class="typing-section">
+    <div class="sec-hdr">
+      <span class="sec-title">TYPE THE TEXT BELOW</span>
+      <span class="sec-title" style="color:var(--car-0)">↑ YOUR CAR = TOP LANE</span>
+    </div>
+
+    <!-- Prompt display -->
+    <div class="prompt-box" id="prompt-box" aria-live="polite" aria-label="Text to type"></div>
+
+    <!-- Keyboard input -->
+    <div class="kb-wrap" id="kb-wrap">
+      <input
+        type="text"
+        class="kb-input"
+        id="kb-input"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        placeholder="Press ▶ START and begin typing here..."
+        disabled
+        aria-label="Typing input"
+      >
+      <span class="kb-hint">⏎ auto-advance</span>
+    </div>
+  </div>
+
+  <!-- CONTROLS BAR -->
+  <div class="controls-bar">
+    <!-- Timer Mode Selector -->
+    <div class="mode-pills">
+      <button class="pill" data-mode="30">30s</button>
+      <button class="pill active" data-mode="60">60s</button>
+      <button class="pill" data-mode="120">2 min</button>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="btn-group">
+      <button class="btn btn-primary" id="btn-start">▶ START RACE</button>
+    </div>
+  </div>
+
+</div><!-- /game-wrap -->
+
+
+<!-- ░░░░░░ RESULT OVERLAY ░░░░░░ -->
+<div class="result-screen" id="result-screen">
+  <div class="result-card">
+
+    <div class="res-header">
+      <div class="res-title">
+        <span id="res-title">FINISH!</span>
+        <small>RACE COMPLETE</small>
+      </div>
+      <div class="pos-badge" id="res-pos-badge">P1 / 6</div>
+    </div>
+
+    <!-- New Best Banner -->
+    <div class="best-banner" id="best-banner">🏆 NEW PERSONAL BEST — AMAZING PERFORMANCE!</div>
+
+    <!-- My Performance -->
+    <div class="my-stats">
+      <div class="ms-card">
+        <div class="ms-val" id="ms-wpm">0</div>
+        <span class="ms-lbl">MY WPM</span>
+      </div>
+      <div class="ms-card">
+        <div class="ms-val" id="ms-acc">0%</div>
+        <span class="ms-lbl">ACCURACY</span>
+      </div>
+      <div class="ms-card">
+        <div class="ms-val" id="ms-lines">0</div>
+        <span class="ms-lbl">LINES</span>
+      </div>
+      <div class="ms-card">
+        <div class="ms-val" id="ms-best">0</div>
+        <span class="ms-lbl">BEST WPM</span>
+      </div>
+    </div>
+
+    <!-- Race Results Table -->
+    <div class="rt-label">RACE RESULTS — ALL DRIVERS</div>
+    <table class="race-table">
+      <thead>
+        <tr>
+          <th>POS</th>
+          <th>VEH</th>
+          <th>DRIVER</th>
+          <th>SPEED</th>
+          <th>ACC</th>
+          <th>STATUS</th>
+        </tr>
+      </thead>
+      <tbody id="race-tbody"></tbody>
+    </table>
+
+    <!-- Footer Buttons -->
+    <div class="res-footer">
+      <button class="btn" id="btn-close-result">✕ Close</button>
+      <button class="btn btn-primary" id="btn-restart">↺ Race Again  [Enter]</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ░░░░░░ PROFILE MODAL ░░░░░░ -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal-card">
+    <div class="modal-title">🏎 Driver Profile</div>
+
+    <!-- Name -->
+    <div class="form-group">
+      <label class="form-label" for="prof-name">DRIVER NAME</label>
+      <input type="text" class="form-input" id="prof-name" placeholder="Enter your name" maxlength="18" autocomplete="off">
+    </div>
+
+    <!-- Car Color -->
+    <div class="form-group">
+      <label class="form-label">CAR COLOR</label>
+      <div class="color-picker">
+        <div class="color-swatch sel" data-idx="0" style="background:#1D4ED8" title="Royal Blue"></div>
+        <div class="color-swatch" data-idx="1" style="background:#B91C1C" title="Racing Red"></div>
+        <div class="color-swatch" data-idx="2" style="background:#C2610A" title="McLaren Orange"></div>
+        <div class="color-swatch" data-idx="3" style="background:#15803D" title="BRG"></div>
+        <div class="color-swatch" data-idx="4" style="background:#7E22CE" title="Purple"></div>
+        <div class="color-swatch" data-idx="5" style="background:#A16207" title="Gold"></div>
+      </div>
+    </div>
+
+    <!-- Vehicle Type -->
+    <div class="form-group">
+      <label class="form-label">VEHICLE TYPE</label>
+      <div class="vehicle-picker">
+        <div class="veh-opt sel" data-veh="car">
+          <span class="veh-icon">🏎️</span>
+          <span class="veh-name">Sports Car</span>
+        </div>
+        <div class="veh-opt" data-veh="bike">
+          <span class="veh-icon">🏍️</span>
+          <span class="veh-name">Motorbike</span>
+        </div>
+        <div class="veh-opt" data-veh="airplane">
+          <span class="veh-icon">✈️</span>
+          <span class="veh-name">Airplane</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn" id="btn-modal-cancel" style="flex:1">Cancel</button>
+      <button class="btn btn-primary" id="btn-modal-save" style="flex:2">💾 Save Profile</button>
+    </div>
+  </div>
+</div>
+<div id="beginner-guide-box">
+    <h3>🚀 Beginner's Guide</h3>
+    <p>Welcome! Master the art of speed typing with these core principles:</p>
+    <ul>
+        <li><strong>Home Row:</strong> Rest your fingers on <span class="highlight-yellow">A S D F</span> and <span class="highlight-yellow">J K L ;</span>.</li>
+        <li><strong>No Peeking:</strong> Keep your eyes on the screen, not the keys!</li>
+        <li><strong>Thumb Power:</strong> Use either thumb strictly for the <span class="highlight-blue">Spacebar</span>.</li>
+        <li><strong>Pinky Duty:</strong> Use pinkies for <span class="highlight-pink">Shift, Enter, and Backspace</span>.</li>
+    </ul>
+    <div class="quote-box">
+        "Accuracy first, speed will follow naturally."
+    </div>
+</div>
+
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
