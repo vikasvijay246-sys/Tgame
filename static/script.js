@@ -1177,33 +1177,79 @@ function setMode(s) {
 
 document.addEventListener('DOMContentLoaded', init);
 
+js
 (function() {
-    const trackWrap = document.querySelector('.track-wrap');
-    if (trackWrap && !document.getElementById('beginner-guide-box')) {
-        // 1. Create a wrapper for flex layout
-        const wrapper = document.createElement('div');
-        wrapper.className = 'race-container-wrapper';
-        
-        // 2. Move track into wrapper
-        trackWrap.parentNode.insertBefore(wrapper, trackWrap);
-        wrapper.appendChild(trackWrap);
-        
-        // 3. Add the Guide Box
-        const guideBox = document.createElement('div');
-        guideBox.id = 'beginner-guide-box';
-        guideBox.innerHTML = `
-            <h3>🚀 Beginner's Guide</h3>
-            <p>Master speed typing with these core principles:</p>
-            <ul>
-                <li><strong>Home Row:</strong> Fingers on <span style="color:#ffcc00">ASDF</span> & <span style="color:#ffcc00">JKL;</span></li>
-                <li><strong>No Peeking:</strong> Eyes on screen, not keys!</li>
-                <li><strong>Thumb:</strong> Only for the <span style="color:#00f2fe">Spacebar</span>.</li>
-                <li><strong>Pinky:</strong> For <span style="color:#ff007c">Shift & Enter</span>.</li>
-            </ul>
-            <div style="border-left: 4px solid #00f2fe; padding-left: 10px; font-style: italic; font-size: 12px; background: rgba(0,242,254,0.1);">
-                "Accuracy first, speed will follow."
-            </div>
-        `;
-        wrapper.appendChild(guideBox);
-    }
+    const guideBox = document.getElementById('beginner-guide-box');
+    if (!guideBox) return;
+
+    // 1. Capture the original guidance message
+    const originalContent = guideBox.innerHTML;
+    guideBox.innerHTML = ''; // Clear the box to rebuild it as a button
+    
+    // 2. Reset the container styles (to remove the big border/background)
+    Object.assign(guideBox.style, {
+        background: 'transparent',
+        border: 'none',
+        boxShadow: 'none',
+        padding: '0',
+        width: 'auto',
+        maxWidth: 'none',
+        position: 'relative',
+        marginLeft: '20px'
+    });
+
+    // 3. Create the "Tip" Button
+    const tipBtn = document.createElement('button');
+    tipBtn.innerHTML = '💡 Tip';
+    Object.assign(tipBtn.style, {
+        background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)',
+        border: 'none',
+        borderRadius: '8px',
+        padding: '10px 24px',
+        color: '#000',
+        fontWeight: '900',
+        cursor: 'pointer',
+        fontSize: '16px',
+        textTransform: 'uppercase',
+        boxShadow: '0 4px 15px rgba(0, 242, 254, 0.4)',
+        transition: 'all 0.2s ease'
+    });
+    
+    // 4. Create the Dropdown Content (The Guidance)
+    const dropdown = document.createElement('div');
+    dropdown.innerHTML = originalContent;
+    Object.assign(dropdown.style, {
+        display: 'none', // Hidden by default
+        position: 'absolute',
+        top: '50px',
+        left: '0',
+        background: 'linear-gradient(135deg, #1e1e2f 0%, #2d2d44 100%)',
+        border: '2px solid #00f2fe',
+        borderRadius: '12px',
+        padding: '20px',
+        width: '280px',
+        zIndex: '9999',
+        boxShadow: '0 15px 40px rgba(0,0,0,0.6)',
+        color: '#fff'
+    });
+
+    // 5. Toggle Logic
+    tipBtn.onclick = (e) => {
+        e.stopPropagation();
+        const isVisible = dropdown.style.display === 'block';
+        dropdown.style.display = isVisible ? 'none' : 'block';
+    };
+
+    // Close tip if clicking anywhere else
+    document.addEventListener('click', () => {
+        dropdown.style.display = 'none';
+    });
+
+    // Hover effect
+    tipBtn.onmouseenter = () => tipBtn.style.filter = 'brightness(1.1)';
+    tipBtn.onmouseleave = () => tipBtn.style.filter = 'brightness(1)';
+
+    // 6. Assemble
+    guideBox.appendChild(tipBtn);
+    guideBox.appendChild(dropdown);
 })();
