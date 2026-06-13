@@ -55,16 +55,12 @@ Built to improve typing speed, accuracy, focus, and keyboard confidence through 
 ## Screenshots
 
 ### Dark Mode
-(Add screenshot here)
+https://github.com/vikasvijay246-sys/Tgame/issues/1#issue-4655331071
 
 ### Light Mode
-(Add screenshot here)
+https://github.com/vikasvijay246-sys/Tgame/issues/1#issue-4655331071
 
 ---
-##Screenshots
-
-Viw all screenshots here
-https://github.com/vikasvijay246-sys/Tgame/issues/1#issue-4655331071
 
 ##Live Demo
 https://tgame-smla.onrender.com
