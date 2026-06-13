@@ -69,3 +69,5 @@ Built to improve typing speed, accuracy, focus, and keyboard confidence through 
 ```bash
 httclone <your-repository-link>
 https://tgame-smla.onrender.com
+##Screen shots of the game
+https://github.com/vikasvijay246-sys/Tgame/issues/1#issue-4655331071
