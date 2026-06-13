@@ -74,6 +74,6 @@ https://tgame-smla.onrender.com
 1. Clone the repository
 
 ```bash
-git clone <  >
+git clone < https://github.com/vikasvijay246-sys/Tgame.git >
 python app.py
 
