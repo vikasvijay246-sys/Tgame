@@ -61,14 +61,19 @@ Built to improve typing speed, accuracy, focus, and keyboard confidence through 
 (Add screenshot here)
 
 ---
-##Screen shots of the game
+##Screenshots
+
+Viw all screenshots here
 https://github.com/vikasvijay246-sys/Tgame/issues/1#issue-4655331071
+
+##Live Demo
+https://tgame-smla.onrender.com
 
 ## How to Run
 
 1. Clone the repository
 
 ```bash
-httclone <your-repository-link>
-https://tgame-smla.onrender.com
+git clone <  >
+python app.py
 
